@@ -14,15 +14,19 @@ function registerUser(){
     c.clearRect(0, 0, canvas.width, canvas.height)
     let input = document.getElementById('username_field')
     let draw_btn = document.getElementById('draw')
+    let img_btn = document.getElementById('img')
     let user_message = document.getElementById('user_message')
     if(input.value.length >= 3){
         //Unlock draw button
         if(draw_btn.disabled == true){ draw_btn.disabled = false}
+        if(img_btn.disabled == true){ img_btn.disabled = false}
+        document.getElementById("capture").innerHTML="";
         username = input.value
         user_message.innerHTML = `You are now logged in as : <b>${username}</b>`
     }
     else{
         if(draw_btn.disabled == false){ draw_btn.disabled = true }
+        if(img_btn.disabled == false){ img_btn.disabled = true}
         username = input.value
         user_message.innerHTML = `You are no longer registered. Register to be able to see your drawings`
     }
@@ -33,6 +37,19 @@ function isUserRegistered(){
 }
 
 //EVENT
+function to_image(){
+
+let img_url=canvas.toDataURL();
+ const div=document.getElementById("capture");
+  var img = document.createElement("img"); 
+  img.src=img_url;
+      img.className="img-fluid img-thumbnail";
+      img.style.height="100%";
+      div.appendChild(img);
+}
+
+
+
 
 addEventListener('load', () => {
     canvas.width = innerWidth
@@ -41,6 +58,8 @@ addEventListener('load', () => {
     let input = document.getElementById('username_field')
     input.value = ''
     draw_btn.disabled = true
+    document.getElementById("capture").innerHTML="";
+
 })
 
 addEventListener('resize', () => {
