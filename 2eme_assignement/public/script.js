@@ -15,11 +15,15 @@ function registerUser(){
     let input = document.getElementById('username_field')
     let draw_btn = document.getElementById('draw')
     let img_btn = document.getElementById('img')
+	let save_btn = document.getElementById('save')
+	let saved_btn = document.getElementById('saved')
     let user_message = document.getElementById('user_message')
     if(input.value.length >= 3){
         //Unlock draw button
         if(draw_btn.disabled == true){ draw_btn.disabled = false}
         if(img_btn.disabled == true){ img_btn.disabled = false}
+		if(save_btn.disabled == true){ save_btn.disabled = false}
+		if(saved_btn.disabled == true){ saved_btn.disabled = false}
         document.getElementById("capture").innerHTML="";
         username = input.value
         user_message.innerHTML = `You are now logged in as : <b>${username}</b>`
@@ -27,6 +31,8 @@ function registerUser(){
     else{
         if(draw_btn.disabled == false){ draw_btn.disabled = true }
         if(img_btn.disabled == false){ img_btn.disabled = true}
+		if(save_btn.disabled == false){ save_btn.disabled = true}
+		if(saved_btn.disabled == false){ saved_btn.disabled = true}
         username = input.value
         user_message.innerHTML = `You are no longer registered. Register to be able to see your drawings`
     }
@@ -40,6 +46,8 @@ function isUserRegistered(){
 function to_image(){
 
 let img_url=canvas.toDataURL();
+const btn=document.getElementById('img');
+btn.href=img_url;
  const div=document.getElementById("capture");
 	div.innerHTML="";
   var img = document.createElement("img"); 
@@ -47,8 +55,52 @@ let img_url=canvas.toDataURL();
       img.className="img-fluid img-thumbnail";
       img.style.height="100%";
       div.appendChild(img);
+
 }
 
+
+const save_img=async () => {
+let user=document.getElementById("username_field").value;
+let date = new Date()
+
+fetch('save', {
+  method: 'post',
+  headers: {
+    'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json'
+  },
+  body: JSON.stringify({img:canvas.toDataURL(),user:user,date:date})
+});
+ alert("image saved");
+
+}
+
+
+
+
+function saved_files(){
+    let user=document.getElementById("username_field").value;
+
+fetch('saved', {
+  method: 'post',
+  headers: {
+    'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json'
+  },
+  body: JSON.stringify({user:user})
+}).then(res => { return(res.json()) }).then(data => {
+            let new_window=window.open()
+          var content="";
+          if(data.length>0){
+              for (var i=0;i<data.length; i++){
+               content=content+"<h1>"+data[i].date+"</h1><br><a href='"+data[i].img+"'><img style='width:50%' src='"+data[i].img+"'></a>";
+              }
+                new_window.document.write(content);
+                new_window.document.close();
+          }
+          else{
+            new_window.document.write("sorry no pictures yet ! try making some art in the whiteboard ");
+          }
+})
+}
 
 
 
