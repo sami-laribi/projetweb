@@ -40,13 +40,10 @@ function isUserRegistered(){
 function to_image(){
 
 let img_url=canvas.toDataURL();
- const div=document.getElementById("capture");
-	div.innerHTML="";
-  var img = document.createElement("img"); 
-  img.src=img_url;
-      img.className="img-fluid img-thumbnail";
-      img.style.height="100%";
-      div.appendChild(img);
+ 
+var wind=window.open("about:blank");
+wind.document.write("<img src='"+img_url+"'>");
+wind.document.close();
 }
 
 

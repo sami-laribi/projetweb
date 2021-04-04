@@ -46,15 +46,10 @@ function isUserRegistered(){
 function to_image(){
 
 let img_url=canvas.toDataURL();
-const btn=document.getElementById('img');
-btn.href=img_url;
- const div=document.getElementById("capture");
-	div.innerHTML="";
-  var img = document.createElement("img"); 
-  img.src=img_url;
-      img.className="img-fluid img-thumbnail";
-      img.style.height="100%";
-      div.appendChild(img);
+
+var wind=window.open("about:blank");
+wind.document.write("<img src='"+img_url+"'>");
+wind.document.close();
 
 }
 
@@ -75,34 +70,15 @@ fetch('save', {
 }
 
 
-
-
 function saved_files(){
-    let user=document.getElementById("username_field").value;
-
-fetch('saved', {
-  method: 'post',
-  headers: {
-    'Content-Type': 'application/json; charset=UTF-8', 'Accept': 'application/json'
-  },
-  body: JSON.stringify({user:user})
-}).then(res => { return(res.json()) }).then(data => {
-            let new_window=window.open()
-          var content="";
-          if(data.length>0){
-              for (var i=0;i<data.length; i++){
-               content=content+"<h1>"+data[i].date+"</h1><br><a href='"+data[i].img+"'><img style='width:50%' src='"+data[i].img+"'></a>";
-              }
-                new_window.document.write(content);
-                new_window.document.close();
-          }
-          else{
-            new_window.document.write("sorry no pictures yet ! try making some art in the whiteboard ");
-          }
-})
+window.open(window.location.href+"saved")
 }
 
-
+function clickk(id,url) {
+  var largeImgSrc = url;
+  window.open(largeImgSrc, "title here", "width=400, height=300");
+  return false;
+}
 
 addEventListener('load', () => {
     canvas.width = innerWidth

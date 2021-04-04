@@ -5,7 +5,6 @@ var imageDataURI = require("image-data-uri")
 
 
 
-
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://admin:admin@cluster0.syhwt.mongodb.net/whiteboard?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -50,7 +49,7 @@ io.on('connect', (socket) => {
 app.post('/save', (req, res) => {
 	 const nom=(req.body.img).toString();
 	 const substr=nom.substr(nom.length-25,25);
-     let filePath = './img/'+substr+'.png';
+     let filePath = './public/img/'+substr+'.png';
      imageDataURI.outputFile(req.body.img, filePath);
 
       db.collection('historique').insertOne(req.body, function(err, res){
@@ -60,11 +59,32 @@ app.post('/save', (req, res) => {
 
 
 
+	
+app.get('/saved', (req, res) => {
+ db.collection('historique').find({}).toArray(function (err, data){
+     if(data.length>0){
 
-app.post('/saved', (req, res) => {
- db.collection('historique').find({user: req.body.user}).toArray(function (err, data){
-    res.send(data);
-  })
+              var header="<html><head><link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6' crossorigin='anonymous'> <style> body{background_color:black;} </style></head>'<body><div class='container'><h1>Community Art </h1></div><br>";
+              var content="";
+              console.log((data[0].img).length);
+              for (var i=0;i<data.length; i++){
+                   		if(i==0){}
+                      content='<div class="container"><div class="card"><h2>'+data[i].user+'</h2><h5>'+data[i].date+'</h5><br><img style="width:50%" src='+data[i].img+'><button class="btn btn-primary" onclick=\'javascript:(function() { var wind=window.open("about:blank"); wind.document.write("<img src='+data[i].img+'>"); wind.document.close(); })()\'> show image</button></div></div>'+content;
+              }
+
+                content=header+content+'<script>function click(){alert("kkbb");}</script></body></html>';
+                res.send(content);
+               
+          }
+          else{
+            res.send("sorry no pictures yet ! try making some art in the whiteboard ");
+  		}
+	});
+});
+
+app.get('/open', (req, res) => {
+	console.log(req.query['img'].length)
+ res.send("<img src='"+req.query['img']+"'>");
 });
 
 
