@@ -1,4 +1,4 @@
-# Whiteboard
+# Movie Quizz
 
 Before executing server.js, you must write the following command in your terminal:
 
